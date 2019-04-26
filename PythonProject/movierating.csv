@@ -1,0 +1,29 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+import csv
+url = 'http://www.imdb.com/chart/toptv'
+page = requests.get(url)
+name=[]
+year=[]
+rating=[]
+f = csv.writer(open('movierating.csv', 'w'))
+f.writerow(['Movie_Title','Year','Rating'])
+soup = BeautifulSoup(page.text, 'html.parser')
+artist_name_list=soup.find('tbody', class_='lister-list')
+movie_name_list_items = artist_name_list.find_all('a')
+movie_year_list_items = soup.find_all('span',class_='secondaryInfo')
+movie_Rating_list_items=artist_name_list.find_all('strong')
+for movie_name in movie_name_list_items:
+	names = movie_name.contents[0]
+	if(len(names)>1):
+		name.append(names)
+for webrupee_element in movie_year_list_items:
+	names = webrupee_element.contents[0]
+	year.append(names)
+for Rating in movie_Rating_list_items:
+	names = Rating.contents[0]
+	rating.append(names)
+for i in range(len(name)):
+	print(name[i]+" "+year[i]+" "+rating[i])
+	f.writerow([name[i],year[i],rating[i]])
